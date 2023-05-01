@@ -1,5 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
+const GradesSchema = new Schema(
+  {
+    grade: String,
+    date: Date,
+    score: Number,
+  },
+  {
+    _id: false,
+  }
+);
+
 const RestaurantSchema = new Schema({
   address: {
     building: String,
@@ -12,13 +23,7 @@ const RestaurantSchema = new Schema({
   },
   borough: String,
   cousine: String,
-  grades: [
-    {
-      date: Date,
-      grade: String,
-      score: Number,
-    },
-  ],
+  grades: [GradesSchema],
   name: String,
   restaurant_id: String,
 });

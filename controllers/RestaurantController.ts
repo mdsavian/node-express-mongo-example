@@ -16,11 +16,43 @@ class RestaurantController {
 
   async allRestaurants(req: Request, res: Response) {
     try {
-      const restaurants = await RestaurantModel.find({});
+      const { withSomeFields, withoutId, borough, limit, skip } = req.query;
+
+      let restaurants;
+
+      let options = {};
+
+      if (limit) {
+        options = { ...options, limit: parseInt(limit.toString()) };
+      }
+
+      if (skip) {
+        options = { ...options, skip: parseInt(skip.toString()) };
+      }
+
+      if (borough) {
+        restaurants = await RestaurantModel.find(
+          { borough },
+          { _id: 0, restaurant_id: 1, name: 1, borough: 1, cousine: 1 },
+          options
+        );
+      } else if (withSomeFields) {
+        restaurants = await RestaurantModel.find(
+          {},
+          { restaurant_id: 1, name: 1, borough: 1, cousine: 1 }
+        );
+      } else if (withoutId) {
+        restaurants = await RestaurantModel.find(
+          {},
+          { _id: 0, restaurant_id: 1, name: 1, borough: 1, cousine: 1 }
+        );
+      } else {
+        restaurants = await RestaurantModel.find({});
+      }
 
       return res.status(200).send({ data: restaurants });
     } catch (error) {
-      return res.status(500).send({ message: `Error fetching all restaurants`, error });
+      return res.status(500).send({ message: `Error fetching all restaurants, ${error}` });
     }
   }
 
@@ -44,6 +76,21 @@ class RestaurantController {
   }
 
   async getById(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        throw new Error("Id is missing");
+      }
+
+      const restaurant = await RestaurantModel.findOne({ _id: id });
+
+      return res.status(200).send({ data: restaurant });
+    } catch (error) {
+      return res.status(500).send({ message: `Error fetching restaurant`, error });
+    }
+  }
+
+  async getByRestaurantId(req: Request, res: Response) {
     try {
       const { id } = req.params;
       if (!id) {
