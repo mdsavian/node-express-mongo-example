@@ -17,6 +17,24 @@ class OrdersController {
     }
   }
 
+  async getById(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        throw new Error("Id is missing");
+      }
+
+      const order = await OrderModel.findOne({ _id: id });
+
+      return res.status(200).send({ data: order });
+    } catch (error) {
+      console.error("error fetching all orders");
+
+      return res.status(500).send({ message: "error fetching order by id" });
+    }
+  }
+
   async create(req: Request, res: Response) {
     try {
       const { number, total, productIds } = req.body || {};
@@ -25,7 +43,10 @@ class OrdersController {
         return res.status(400).send({ message: "Missing body" });
       }
 
-      const products = await ProductModel.find({ _id: { $in: productIds } });
+      const products = await ProductModel.find(
+        { _id: { $in: productIds } },
+        { _id: 1, name: 1, price: 1, sku: 1 }
+      );
       console.log(products);
 
       const newOrder = {

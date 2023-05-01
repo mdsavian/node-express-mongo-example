@@ -28,8 +28,6 @@ class RecipeController {
 
     const convertedElapsedTime = parseInt(elapsedTime.toString());
 
-    // console.log(timeId);
-
     const recipe = await RecipeModel.findOne({ _id: recipeId });
 
     if (!recipe) {
