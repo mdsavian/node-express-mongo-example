@@ -16,6 +16,22 @@ class RestaurantController {
     }
   }
 
+  async createBatch(req: Request, res: Response) {
+    try {
+      const batch = req.body;
+
+      const promises = batch.map((restaurant: any) => {
+        return RestaurantModel.create(restaurant);
+      });
+
+      await Promise.all(promises);
+
+      return res.status(200).send({ message: "Success" });
+    } catch (error) {
+      return res.status(500).send({ message: `Error creating in batch, ${error}` });
+    }
+  }
+
   async allRestaurants(req: Request, res: Response) {
     try {
       const { withSomeFields, withoutId, borough, limit, skip } = req.query;
@@ -69,6 +85,20 @@ class RestaurantController {
       return res.status(200).send({ data: restaurants });
     } catch (error) {
       return res.status(500).send({ message: `Error fetching score restaurants, ${error}` });
+    }
+  }
+
+  async findScoreAndCousine(req: Request, res: Response) {
+    try {
+      const { cousine, score } = req.query;
+      const restaurants = await RestaurantModel.find({
+        cousine: { $ne: cousine },
+        grades: { $elemMatch: { score: { $gt: score } } },
+      });
+
+      return res.status(200).send({ data: restaurants });
+    } catch (error) {
+      return res.status(500).send({ message: `Error fetching cousine restaurants, ${error}` });
     }
   }
 

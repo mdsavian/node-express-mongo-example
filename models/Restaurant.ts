@@ -14,15 +14,12 @@ const GradesSchema = new Schema(
 const RestaurantSchema = new Schema({
   address: {
     building: String,
-    coordinates: {
-      lat: Number,
-      long: Number,
-    },
+    coord: [Number, Number],
     street: String,
     zipcode: String,
   },
   borough: String,
-  cousine: String,
+  cuisine: String,
   grades: [GradesSchema],
   name: String,
   restaurant_id: String,
