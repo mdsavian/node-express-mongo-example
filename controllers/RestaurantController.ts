@@ -88,13 +88,43 @@ class RestaurantController {
     }
   }
 
-  async findScoreAndCousine(req: Request, res: Response) {
+  async findByCoord(req: Request, res: Response) {
     try {
-      const { cousine, score } = req.query;
+      const { lat } = req.query;
+
+      const restaurants = await RestaurantModel.find({ "address.coord": { $lt: lat } });
+
+      return res.status(200).send({ data: restaurants });
+    } catch (error) {
+      return res.status(500).send({ message: `Error fetching by coord, ${error}` });
+    }
+  }
+
+  async findScoreAndNotCousineAndCoord(req: Request, res: Response) {
+    try {
+      const { cousine, score, lat } = req.query;
+
       const restaurants = await RestaurantModel.find({
         cousine: { $ne: cousine },
         grades: { $elemMatch: { score: { $gt: score } } },
+        "address.coord": { $lt: lat },
       });
+
+      return res.status(200).send({ data: restaurants });
+    } catch (error) {
+      return res.status(500).send({ message: `Error fetching cousine restaurants, ${error}` });
+    }
+  }
+
+  async findNotCousineGradePointNotBoroughOrderDescCousine(req: Request, res: Response) {
+    try {
+      const { cousine, gradePoint, borough } = req.query;
+
+      const restaurants = await RestaurantModel.find({
+        cousine: { $ne: cousine },
+        "grades.grade": gradePoint,
+        borough: { $ne: borough },
+      }).sort({ cuisine: -1 });
 
       return res.status(200).send({ data: restaurants });
     } catch (error) {

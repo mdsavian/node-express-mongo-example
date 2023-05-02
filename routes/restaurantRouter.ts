@@ -9,7 +9,12 @@ router.post("/createBatch", routerController.createBatch);
 router.delete("/:id", routerController.delete);
 
 router.get("/findScore", routerController.findScore);
-router.get("/findScoreAndCousine", routerController.findScoreAndCousine);
+router.get("/findScoreAndNotCousineAndCoord", routerController.findScoreAndNotCousineAndCoord);
+router.get(
+  "/findNotCousineGradePointNotBoroughOrderDescCousine",
+  routerController.findNotCousineGradePointNotBoroughOrderDescCousine
+);
+router.get("/findByCoord", routerController.findByCoord);
 router.get("/byRestaurantId/:id", routerController.getByRestaurantId);
 
 router.get("/", routerController.allRestaurants);
