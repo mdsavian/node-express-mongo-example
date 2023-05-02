@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import RestaurantModel from "../models/Restaurant";
+import RestaurantService from "../services/restaurantService";
 
 // https://www.w3resource.com/mongodb-exercises/#PracticeOnline
 
@@ -8,7 +9,7 @@ class RestaurantController {
 
   async create(req: Request, res: Response) {
     try {
-      const newRestaurant = await RestaurantModel.create(req.body);
+      const newRestaurant = await RestaurantService.create(req.body);
 
       return res.status(200).send({ data: newRestaurant });
     } catch (error) {
