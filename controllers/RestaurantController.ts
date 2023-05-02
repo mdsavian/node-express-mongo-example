@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import RestaurantModel from "../models/Restaurant";
 
+// https://www.w3resource.com/mongodb-exercises/#PracticeOnline
+
 class RestaurantController {
   constructor() {}
 
@@ -53,6 +55,20 @@ class RestaurantController {
       return res.status(200).send({ data: restaurants });
     } catch (error) {
       return res.status(500).send({ message: `Error fetching all restaurants, ${error}` });
+    }
+  }
+
+  async findScore(req: Request, res: Response) {
+    try {
+      const { higherThan, lessThan } = req.query;
+
+      const restaurants = await RestaurantModel.find({
+        grades: { $elemMatch: { score: { $gt: higherThan, $lt: lessThan } } },
+      });
+
+      return res.status(200).send({ data: restaurants });
+    } catch (error) {
+      return res.status(500).send({ message: `Error fetching score restaurants, ${error}` });
     }
   }
 
