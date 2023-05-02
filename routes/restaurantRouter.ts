@@ -15,6 +15,7 @@ router.get(
   routerController.findNotCousineGradePointNotBoroughOrderDescCousine
 );
 router.get("/findByCoord", routerController.findByCoord);
+router.get("/findByMatchName", routerController.findByMatchName);
 router.get("/byRestaurantId/:id", routerController.getByRestaurantId);
 
 router.get("/", routerController.allRestaurants);
